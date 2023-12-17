@@ -50,8 +50,6 @@ const part1 = async () => {
       })
       .every(x => x);
     const gameId = Number(curr.split(':')[0].replace('Game ', ''));
-
-    // const gameId = Number(curr.split('').find(x => x.match(/[0-9]/)));
     if (gameValid) {
       return acc + gameId;
     }
@@ -61,4 +59,40 @@ const part1 = async () => {
   console.log('File processed.', 'Sum of numbers:', res);
 };
 
-part1();
+const part2 = async () => {
+  const arr = await readFileAsync('../day2/input.txt');
+  if (!arr) {
+    return null;
+  }
+
+  const res = arr.reduce((acc, curr) => {
+    const sets = curr
+      .replace(/Game \d+: /, '')
+      .trim()
+      .split(';');
+    const minCubesCounter: Record<string, number> = {
+      red: 0,
+      green: 0,
+      blue: 0,
+    };
+
+    sets.map((set: string) => {
+      const gameSet = set.split(',').map((x: string) => x.trim());
+      gameSet.map(gS => {
+        const [number, colour] = gS.split(' ');
+        if (minCubesCounter[colour] < Number(number)) {
+          minCubesCounter[colour] = Number(number);
+        }
+      });
+    });
+    const multyNumber = Object.values(minCubesCounter).reduce(
+      (acc, curr) => acc * curr,
+      1,
+    );
+    return acc + multyNumber;
+  }, 0);
+  console.log('File processed.', 'Result:', res);
+};
+
+// part1();
+part2();
